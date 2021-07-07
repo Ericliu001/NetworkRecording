@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class motif.Scope
+-keep class motif.ScopeImpl
+-keep @motif.Scope interface *
+-keep @motif.ScopeImpl class *

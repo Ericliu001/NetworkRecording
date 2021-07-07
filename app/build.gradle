@@ -46,8 +46,8 @@ android {
 
 dependencies {
     api project(":recorder")
-    annotationProcessor "com.uber.motif:motif-compiler:0.3.4"
     implementation "com.uber.motif:motif:0.3.4"
+    kapt "com.uber.motif:motif-compiler:0.3.4"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_serialization_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"

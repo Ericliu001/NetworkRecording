@@ -1,13 +1,11 @@
 package com.example.networkrecording
 
-import android.app.Activity
 import com.example.networkrecording.network.GithubService
 import com.example.recorder.NetworkRecorder
 import com.example.recorder.RecordingInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.json.Json
-import motif.Creatable
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -16,8 +14,11 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 private const val API_BASE_URL = "https://api.github.com"
 
 @motif.Scope
-interface MainScope : Creatable<MainScope.Dependencies> {
+interface MainScope {
 
+    fun networkRecorder(): NetworkRecorder
+
+    fun retrofit(): Retrofit
 
     @motif.Objects
     abstract class Objects {
@@ -44,9 +45,5 @@ interface MainScope : Creatable<MainScope.Dependencies> {
         fun githubService(retrofit: Retrofit): GithubService =
             retrofit.create(GithubService::class.java)
 
-    }
-
-    interface Dependencies {
-        fun activity(): Activity
     }
 }

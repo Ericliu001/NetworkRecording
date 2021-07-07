@@ -1,34 +1,36 @@
 package com.example.networkrecording
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.networkrecording.databinding.ActivityMainBinding
-import com.example.recorder.Test
+import com.example.recorder.NetworkRecorder
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import motif.ScopeFactory
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainScope: MainScope
+    private lateinit var networkRecorder: NetworkRecorder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        mainScope = ScopeFactory.create(MainScope::class.java, object : MainScope.Dependencies {
-            override fun activity(): Activity {
-                return this@MainActivity
-            }
-        })
+        mainScope = MainScopeImpl()
 
-        val test = Test()
+        networkRecorder = mainScope.networkRecorder()
+
+        val externalStorageVolumes: Array<out File> =
+            ContextCompat.getExternalFilesDirs(applicationContext, null)
+        val primaryExternalStorage = externalStorageVolumes[0]
+        networkRecorder.startRecording(primaryExternalStorage)
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -41,5 +43,10 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    override fun onStop() {
+        networkRecorder.stopRecording()
+        super.onStop()
     }
 }
