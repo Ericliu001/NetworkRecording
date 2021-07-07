@@ -1,5 +1,52 @@
 package com.example.networkrecording
 
+import android.app.Activity
+import com.example.networkrecording.network.GithubService
+import com.example.recorder.NetworkRecorder
+import com.example.recorder.RecordingInterceptor
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import io.reactivex.schedulers.Schedulers
+import kotlinx.serialization.json.Json
+import motif.Creatable
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+
+private const val API_BASE_URL = "https://api.github.com"
+
 @motif.Scope
-interface MainScope {
+interface MainScope : Creatable<MainScope.Dependencies> {
+
+
+    @motif.Objects
+    abstract class Objects {
+        fun recordingInterceptor(): RecordingInterceptor = RecordingInterceptor()
+
+        fun networkRecorder(recordingInterceptor: RecordingInterceptor): NetworkRecorder =
+            NetworkRecorder(recordingInterceptor)
+
+        fun okHttpClient(recordingInterceptor: RecordingInterceptor): OkHttpClient =
+            OkHttpClient.Builder()
+                .addInterceptor(recordingInterceptor)
+                .build()
+
+        fun retrofit(okHttpClient: OkHttpClient): Retrofit {
+            val contentType = MediaType.get("application/json")
+            return Retrofit.Builder()
+                .baseUrl(API_BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(Json.asConverterFactory(contentType))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+                .build()
+        }
+
+        fun githubService(retrofit: Retrofit): GithubService =
+            retrofit.create(GithubService::class.java)
+
+    }
+
+    interface Dependencies {
+        fun activity(): Activity
+    }
 }

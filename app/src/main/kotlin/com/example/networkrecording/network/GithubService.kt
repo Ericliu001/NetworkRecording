@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-internal interface GithubService {
+interface GithubService {
     @GET("/users/{owner}/repos")
     fun repos(
         @Path("owner") owner: String
