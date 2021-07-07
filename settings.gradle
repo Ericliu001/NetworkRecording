@@ -1,0 +1,3 @@
+rootProject.name = "NetworkRecording"
+include ':app'
+include ':recorder'
