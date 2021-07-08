@@ -1,6 +1,7 @@
 package com.example.networkrecording
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
@@ -10,6 +11,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.networkrecording.databinding.ActivityMainBinding
 import com.example.recorder.NetworkRecorder
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +20,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var mainScope: MainScope
     private lateinit var networkRecorder: NetworkRecorder
+
+    // Using the viewModels() Kotlin property delegate from the activity-ktx
+    // artifact to retrieve the ViewModel in the activity scope
+    private val viewModel: ItemViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +50,15 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        mainScope.githubService().repos("ericliu001")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                it.body()?.let { repos ->
+                    viewModel.populateRepos(repos)
+                }
+            }
     }
 
     override fun onStop() {

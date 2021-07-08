@@ -5,6 +5,7 @@ import com.example.recorder.NetworkRecorder
 import com.example.recorder.RecordingInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.reactivex.schedulers.Schedulers
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
@@ -18,7 +19,7 @@ interface MainScope {
 
     fun networkRecorder(): NetworkRecorder
 
-    fun retrofit(): Retrofit
+    fun githubService(): GithubService
 
     @motif.Objects
     abstract class Objects {
@@ -32,12 +33,18 @@ interface MainScope {
                 .addInterceptor(recordingInterceptor)
                 .build()
 
+        @ExperimentalSerializationApi
         fun retrofit(okHttpClient: OkHttpClient): Retrofit {
             val contentType = MediaType.get("application/json")
             return Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
                 .client(okHttpClient)
-                .addConverterFactory(Json.asConverterFactory(contentType))
+//                .addConverterFactory(Json.asConverterFactory(contentType))
+                .addConverterFactory(Json {
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                }
+                    .asConverterFactory(MediaType.get("application/json")))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .build()
         }

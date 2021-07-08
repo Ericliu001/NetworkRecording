@@ -41,7 +41,7 @@ fun fromHttpResponse(okhttpResponse: okhttp3.Response): RecordedResponse {
         okhttpResponse.code(),
         okhttpResponse.message(),
         okhttpResponse.headers(),
-        fromHttpResponesBody(okhttpResponse.body()),
+        fromHttpResponesBody(okhttpResponse.peekBody(Long.MAX_VALUE)),
         okhttpResponse.protocol()
     )
 }
