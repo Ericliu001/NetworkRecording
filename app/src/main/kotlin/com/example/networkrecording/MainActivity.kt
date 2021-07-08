@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -51,14 +52,21 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        mainScope.githubService().repos("ericliu001")
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                it.body()?.let { repos ->
-                    viewModel.populateRepos(repos)
+        navController.addOnDestinationChangedListener(NavController.OnDestinationChangedListener
+        { controller, destination, arguments ->
+
+            mainScope.githubService().repos("ericliu001")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    it.body()?.let { repos ->
+                        viewModel.populateRepos(repos)
+                    }
                 }
-            }
+
+
+        })
+
     }
 
     override fun onStop() {
