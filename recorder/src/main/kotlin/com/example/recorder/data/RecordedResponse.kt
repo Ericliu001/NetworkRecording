@@ -1,12 +1,13 @@
 package com.example.recorder.data
 
-import okhttp3.Headers
+import kotlinx.serialization.Serializable
 import okhttp3.Protocol
 
+@Serializable
 data class RecordedResponse(
     val code: Int,
     val message: String,
-    val headers: Headers,
+    val headers: Map<String, String>? = null,
     val responseBody: RecordedResponseBody? = null,
     val protocol: Protocol = Protocol.HTTP_1_1
 )
