@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class RecordedRequest(
     val url: String,
     val method: String,
-    val headers: Map<String, String>? = null,
+    val headers: Map<String, List<String>>? = null,
     val body: RecordedRequestBody? = null,
 )

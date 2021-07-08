@@ -1,37 +1,48 @@
 package com.example.recorder
 
 import com.example.recorder.data.RecordedRequest
+import com.example.recorder.data.RecordedRequestBody
 import com.example.recorder.data.RecordedResponse
 import com.example.recorder.data.RecordedResponseBody
-import okhttp3.Response
+import okhttp3.Headers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import okio.Buffer
+import java.io.IOException
 
 fun fromHttpRequest(okhttpRequest: okhttp3.Request): RecordedRequest {
     return RecordedRequest(
-        okhttpRequest.url(),
+        okhttpRequest.url().encodedPath(),
         okhttpRequest.method(),
-        okhttpRequest.headers(),
-        okhttpRequest.body(),
-        okhttpRequest.tag()
+        okhttpRequest.headers().toMultimap(),
+        fromHttpRequestBody(okhttpRequest.body())
     )
 }
 
-fun toHttpResponseBuilder(recordedResponse: RecordedResponse): Response.Builder {
+fun toHttpResponseBuilder(recordedResponse: RecordedResponse): okhttp3.Response.Builder {
     val responseBody = recordedResponse.responseBody
     var okhttpResponseBody: ResponseBody? = null
-
+    val mediaType = MediaType.parse(responseBody?.contentType ?: "")
     responseBody?.let {
         okhttpResponseBody =
             ResponseBody.create(
-                responseBody.contentType,
+                mediaType,
                 responseBody.bytes.toByteArray()
             )
+    }
+
+    val headersBuilder = Headers.Builder()
+    for ((name, values) in recordedResponse.headers) {
+        for (value in values) {
+            headersBuilder.add(name, value)
+        }
     }
 
     return okhttp3.Response.Builder()
         .code(recordedResponse.code)
         .message(recordedResponse.message)
-        .headers(recordedResponse.headers)
+        .headers(headersBuilder.build())
         .body(okhttpResponseBody)
         .protocol(recordedResponse.protocol)
 }
@@ -71,17 +82,39 @@ fun fromHttpResponse(okhttpResponse: okhttp3.Response): RecordedResponse {
     return RecordedResponse(
         okhttpResponse.code(),
         okhttpResponse.message(),
-        okhttpResponse.headers(),
+        okhttpResponse.headers().toMultimap(),
         fromHttpResponesBody(okhttpResponse.peekBody(Long.MAX_VALUE)),
         okhttpResponse.protocol()
     )
+}
+
+private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RecordedRequestBody? {
+    okhttpRequestBody?.let { body ->
+        val content: Array<Byte>
+        val contentType: String?
+
+        try {
+            val buffer = Buffer()
+            body.writeTo(buffer)
+            content = buffer.readByteArray().toTypedArray()
+            contentType = body.contentType().toString()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
+        return RecordedRequestBody(
+            content,
+            contentType
+        )
+    }
+
+    return null
 }
 
 private fun fromHttpResponesBody(okhttpResponseBody: ResponseBody?): RecordedResponseBody? {
     okhttpResponseBody?.let { body ->
         return RecordedResponseBody(
             body.bytes().toTypedArray(),
-            body.contentType()
+            body.contentType()?.toString()
         )
     }
     return null

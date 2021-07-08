@@ -8,7 +8,7 @@ interface MatchRule {
 
 class DefaultMatcheRule : MatchRule {
     override fun isMatch(a: RecordedRequest, b: RecordedRequest): Boolean {
-        return a.url.encodedPath() == b.url.encodedPath()
+        return a.url == b.url
     }
 
     companion object {

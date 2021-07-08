@@ -1,8 +1,8 @@
 package com.example.recorder
 
-import okhttp3.ResponseBody
 import com.example.recorder.data.RecordedRequest
 import com.example.recorder.data.RecordedResponse
+import okhttp3.ResponseBody
 import java.io.*
 import java.nio.file.Files
 
@@ -17,7 +17,7 @@ class DiskRepo(private val root: File) {
     }
 
     fun write(request: RecordedRequest, response: RecordedResponse) {
-        val requestEndpoint = request.url.encodedPath()
+        val requestEndpoint = request.url
         try {
             val pathname = getRecordedResponsePath(requestEndpoint)
             if (File(pathname).exists()) {

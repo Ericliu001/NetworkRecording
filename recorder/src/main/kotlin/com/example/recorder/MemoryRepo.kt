@@ -3,7 +3,7 @@ package com.example.recorder
 import com.example.recorder.data.RecordedRequest
 import com.example.recorder.data.RecordedResponse
 
-class MemoryRepo() {
+class MemoryRepo {
     private val records = mutableMapOf<RecordedRequest, MutableList<RecordedResponse>>()
 
     fun read(

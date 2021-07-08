@@ -3,6 +3,7 @@ package com.example.recorder
 import okhttp3.Interceptor
 import okhttp3.Response
 
+// TODO: 7/8/21 split the interceptor to 2: read interceptor and write interceptor.
 class RecordingInterceptor() : Interceptor {
     private var repo: MemoryRepo? = null
 
