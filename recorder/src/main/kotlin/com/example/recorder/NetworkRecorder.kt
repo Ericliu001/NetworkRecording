@@ -13,9 +13,6 @@ class NetworkRecorder(val recordingInterceptor: RecordingInterceptor) {
     }
 
     fun stopRecording() {
-        memoryRepo.getAllRecordings().let { records ->
-
-//            diskRepo.write()
-        }
+        diskRepo.writeRecords(memoryRepo.getAllRecordings())
     }
 }

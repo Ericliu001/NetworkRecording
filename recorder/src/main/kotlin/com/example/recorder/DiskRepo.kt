@@ -1,10 +1,13 @@
 package com.example.recorder
 
+import android.util.Log
 import com.example.recorder.data.RecordedRequest
 import com.example.recorder.data.RecordedResponse
+import kotlinx.serialization.json.Json
 import okhttp3.ResponseBody
 import java.io.*
 import java.nio.file.Files
+import kotlinx.serialization.encodeToString
 
 class DiskRepo(private val root: File) {
     fun read(request: RecordedRequest, matchRule: MatchRule): List<RecordedResponse> {
@@ -87,6 +90,13 @@ class DiskRepo(private val root: File) {
             dir.mkdirs()
         }
         return dir
+    }
+
+    fun writeRecords(records: Map<RecordedRequest, List<RecordedResponse>>) {
+        val encodeToString = Json{
+            allowStructuredMapKeys = true
+        }.encodeToString(records)
+        Log.d("xxxx", encodeToString)
     }
 
 

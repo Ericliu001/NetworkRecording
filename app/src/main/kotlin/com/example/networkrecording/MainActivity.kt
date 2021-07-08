@@ -69,8 +69,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onStop() {
+
+    override fun onPause() {
         networkRecorder.stopRecording()
-        super.onStop()
+        super.onPause()
     }
 }
