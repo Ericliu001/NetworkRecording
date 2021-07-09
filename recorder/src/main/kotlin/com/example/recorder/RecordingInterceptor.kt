@@ -1,5 +1,6 @@
 package com.example.recorder
 
+import com.example.recorder.repo.MemoryRepo
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -31,7 +32,7 @@ class RecordingInterceptor() : Interceptor {
     }
 
 
-    fun setResponseRepo(repo: MemoryRepo) {
+    internal fun setResponseRepo(repo: MemoryRepo) {
         this.repo = repo
     }
 }

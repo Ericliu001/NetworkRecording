@@ -1,4 +1,4 @@
-package com.example.recorder
+package com.example.recorder.repo
 
 import com.example.recorder.data.RecordedRequest
 import com.example.recorder.data.RecordedResponse
@@ -8,7 +8,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-class DiskRepo(private val root: File) {
+internal class DiskRepo(private val root: File) {
 
     fun writeRecords(records: Map<RecordedRequest, List<RecordedResponse>>) {
         for ((request, responses) in records) {

@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onPause() {
-        networkRecorder.stopRecording()
+        networkRecorder.saveRecordsToFiles()
         super.onPause()
     }
 }

@@ -11,7 +11,7 @@ import okhttp3.ResponseBody
 import okio.Buffer
 import java.io.IOException
 
-fun fromHttpRequest(okhttpRequest: okhttp3.Request): RecordedRequest {
+internal fun fromHttpRequest(okhttpRequest: okhttp3.Request): RecordedRequest {
     return RecordedRequest(
         okhttpRequest.url().encodedPath(),
         okhttpRequest.method(),

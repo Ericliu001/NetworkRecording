@@ -1,5 +1,7 @@
 package com.example.recorder
 
+import com.example.recorder.repo.DiskRepo
+import com.example.recorder.repo.MemoryRepo
 import java.io.File
 
 class NetworkRecorder(val recordingInterceptor: RecordingInterceptor) {
@@ -12,7 +14,7 @@ class NetworkRecorder(val recordingInterceptor: RecordingInterceptor) {
         recordingInterceptor.setResponseRepo(memoryRepo)
     }
 
-    fun stopRecording() {
+    fun saveRecordsToFiles() {
         diskRepo.writeRecords(memoryRepo.getAllRecordings())
     }
 }

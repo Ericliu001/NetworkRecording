@@ -4,6 +4,7 @@ buildscript {
     ext.okhttp_version = "3.14.9"
     ext.retrofit_version = "2.9.0"
     ext.kotlin_serialization_version = "1.2.1"
+    ext.work_version = "2.5.0"
 
     repositories {
         google()

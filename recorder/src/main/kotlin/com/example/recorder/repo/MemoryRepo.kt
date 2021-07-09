@@ -1,9 +1,11 @@
-package com.example.recorder
+package com.example.recorder.repo
 
+import com.example.recorder.DefaultMatcheRule
+import com.example.recorder.MatchRule
 import com.example.recorder.data.RecordedRequest
 import com.example.recorder.data.RecordedResponse
 
-class MemoryRepo {
+internal class MemoryRepo {
     private val records = mutableMapOf<RecordedRequest, MutableList<RecordedResponse>>()
 
     fun read(
