@@ -39,7 +39,6 @@ interface MainScope {
             return Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
                 .client(okHttpClient)
-//                .addConverterFactory(Json.asConverterFactory(contentType))
                 .addConverterFactory(Json {
                     isLenient = true
                     ignoreUnknownKeys = true
