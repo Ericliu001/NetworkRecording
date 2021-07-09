@@ -1,7 +1,7 @@
 package com.example.recorder.repo
 
-import com.example.recorder.data.RecordedRequest
-import com.example.recorder.data.RecordedResponse
+import com.example.recorder.data.RequestRecord
+import com.example.recorder.data.ResponseRecord
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -10,18 +10,18 @@ import java.io.InputStream
 
 internal class DiskRepo(private val root: File) {
 
-    fun writeRecords(records: Map<RecordedRequest, List<RecordedResponse>>) {
+    fun writeRecords(records: Map<RequestRecord, List<ResponseRecord>>) {
         for ((request, responses) in records) {
             writeToFile(request, responses)
         }
     }
 
-    private fun writeToFile(request: RecordedRequest, responses: List<RecordedResponse>) {
-        val path = root.absolutePath + request.url + "/Record"
+    private fun writeToFile(requestRecord: RequestRecord, responses: List<ResponseRecord>) {
+        val path = root.absolutePath + requestRecord.url + "/Record"
 
         val encodedRecords = Json {
             allowStructuredMapKeys = true
-        }.encodeToString(Pair(request, responses))
+        }.encodeToString(Pair(requestRecord, responses))
 
         val outputFile = File(path)
         if (outputFile.exists()) {

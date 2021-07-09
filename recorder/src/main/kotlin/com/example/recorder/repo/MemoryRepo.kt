@@ -2,18 +2,18 @@ package com.example.recorder.repo
 
 import com.example.recorder.DefaultMatcheRule
 import com.example.recorder.MatchRule
-import com.example.recorder.data.RecordedRequest
-import com.example.recorder.data.RecordedResponse
+import com.example.recorder.data.RequestRecord
+import com.example.recorder.data.ResponseRecord
 
 internal class MemoryRepo {
-    private val records = mutableMapOf<RecordedRequest, MutableList<RecordedResponse>>()
+    private val records = mutableMapOf<RequestRecord, MutableList<ResponseRecord>>()
 
     fun read(
-        request: RecordedRequest,
+        requestRecord: RequestRecord,
         matchRule: MatchRule = DefaultMatcheRule.INSTANCE
-    ): List<RecordedResponse> {
+    ): List<ResponseRecord> {
         for ((recordedRequest, recordedResponses) in records) {
-            if (matchRule.isMatch(recordedRequest, request)) {
+            if (matchRule.isMatch(recordedRequest, requestRecord)) {
                 return recordedResponses.toList()
             }
         }
@@ -22,24 +22,24 @@ internal class MemoryRepo {
     }
 
     fun update(
-        request: RecordedRequest,
-        responses: List<RecordedResponse>,
+        requestRecord: RequestRecord,
+        responses: List<ResponseRecord>,
         matchRule: MatchRule = DefaultMatcheRule.INSTANCE
     ) {
         for (key in records.keys) {
-            if (matchRule.isMatch(key, request)) {
+            if (matchRule.isMatch(key, requestRecord)) {
                 records[key] = responses.toMutableList()
             }
         }
     }
 
-    fun write(request: RecordedRequest, response: RecordedResponse) {
-        val list = records.getOrDefault(request, mutableListOf())
-        list.add(response)
-        records[request] = list
+    fun write(requestRecord: RequestRecord, responseRecord: ResponseRecord) {
+        val list = records.getOrDefault(requestRecord, mutableListOf())
+        list.add(responseRecord)
+        records[requestRecord] = list
     }
 
-    fun getAllRecordings(): Map<RecordedRequest, List<RecordedResponse>> {
+    fun getAllRecordings(): Map<RequestRecord, List<ResponseRecord>> {
         return records.toMap()
     }
 }

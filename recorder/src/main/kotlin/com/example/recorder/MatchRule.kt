@@ -1,13 +1,13 @@
 package com.example.recorder
 
-import com.example.recorder.data.RecordedRequest
+import com.example.recorder.data.RequestRecord
 
 interface MatchRule {
-    fun isMatch(a: RecordedRequest, b: RecordedRequest): Boolean
+    fun isMatch(a: RequestRecord, b: RequestRecord): Boolean
 }
 
 class DefaultMatcheRule : MatchRule {
-    override fun isMatch(a: RecordedRequest, b: RecordedRequest): Boolean {
+    override fun isMatch(a: RequestRecord, b: RequestRecord): Boolean {
         return a.url == b.url
     }
 

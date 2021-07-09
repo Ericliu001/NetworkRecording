@@ -3,9 +3,9 @@ package com.example.recorder.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RecordedRequest(
+data class RequestRecord(
     val url: String,
     val method: String,
     val headers: Map<String, List<String>>? = null,
-    val body: RecordedRequestBody? = null,
+    val body: RequestBodyRecord? = null,
 )
