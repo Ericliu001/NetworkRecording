@@ -17,19 +17,19 @@ internal class DiskRepo(private val root: File) {
     }
 
     private fun writeToFile(requestRecord: RequestRecord, responses: List<ResponseRecord>) {
-        val path = root.absolutePath + requestRecord.url + "/Record"
 
         val encodedRecords = Json {
             allowStructuredMapKeys = true
         }.encodeToString(Pair(requestRecord, responses))
 
-        val outputFile = File(path)
+        val path = root.absolutePath + requestRecord.url + "/"
+        File(path).mkdirs()
+        val outputFile = File(path, "Record")
         if (outputFile.exists()) {
             outputFile.delete()
-            outputFile.createNewFile()
-        } else {
-            outputFile.createNewFile()
         }
+
+        outputFile.createNewFile()
 
         var outputStream: FileOutputStream? = null
         var inputStream: InputStream? = null
@@ -45,7 +45,6 @@ internal class DiskRepo(private val root: File) {
             }
         } finally {
             inputStream?.let { inputStream.close() }
-
             outputStream?.let { outputStream.close() }
         }
     }

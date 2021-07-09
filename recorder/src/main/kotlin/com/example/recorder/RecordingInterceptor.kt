@@ -14,14 +14,14 @@ class RecordingInterceptor() : Interceptor {
         val recordedRequest = fromHttpRequest(request)
 
         // TODO: 7/7/21 specify read/write mode.
-        repo?.let { repo ->
-            val readResponse = repo.read(recordedRequest)
-            if (readResponse.isNotEmpty()) {
-                val first = readResponse.first()
-                return toHttpResponseBuilder(first).request(request).build()
-            }
-
-        }
+//        repo?.let { repo ->
+//            val readResponse = repo.read(recordedRequest)
+//            if (readResponse.isNotEmpty()) {
+//                val first = readResponse.first()
+//                return toHttpResponseBuilder(first).request(request).build()
+//            }
+//
+//        }
 
         val response: Response = chain.proceed(request)
         repo?.let {

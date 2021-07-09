@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.networkrecording.databinding.ActivityMainBinding
 import com.example.recorder.NetworkRecorder
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File
@@ -38,7 +39,10 @@ class MainActivity : AppCompatActivity() {
         val externalStorageVolumes: Array<out File> =
             ContextCompat.getExternalFilesDirs(applicationContext, null)
         val primaryExternalStorage = externalStorageVolumes[0]
-        networkRecorder.startRecording(primaryExternalStorage)
+
+        getExternalFilesDir(null)?.let { root ->
+            networkRecorder.startRecording(root)
+        }
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -55,23 +59,41 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener(NavController.OnDestinationChangedListener
         { controller, destination, arguments ->
 
-            mainScope.githubService().repos("ericliu001")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    it.body()?.let { repos ->
-                        viewModel.populateRepos(repos)
+            if (destination.label == "Home") {
+                mainScope.githubService().repos("Leland-Takamine")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        it.body()?.let { repos ->
+                            viewModel.populateRepos(repos)
+                        }
                     }
+
+            }
+
+            if (destination.label == "Dashboard") {
+                mainScope.githubService().repos("ericliu001")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        it.body()?.let { repos ->
+                            viewModel.populateRepos(repos)
+                        }
+                    }
+
+            }
+
+
+            if (destination.label == "Notifications") {
+                Completable.create {
+                    networkRecorder.saveRecordsToFiles()
                 }
-
-
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe()
+            }
         })
 
     }
 
-
-    override fun onPause() {
-        networkRecorder.saveRecordsToFiles()
-        super.onPause()
-    }
 }
