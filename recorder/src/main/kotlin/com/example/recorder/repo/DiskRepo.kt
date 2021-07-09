@@ -60,7 +60,8 @@ internal class DiskRepo(private val root: File) {
     private fun getFileByRequestUrl(requestRecord: RequestRecord): File {
         val path = root.absolutePath + requestRecord.url
         File(path).mkdirs()
-        val outputFile = File(path, FILENAME)
+        val suffix = requestRecord.hashCode()
+        val outputFile = File(path, FILENAME + "_" + suffix)
         return outputFile
     }
 
