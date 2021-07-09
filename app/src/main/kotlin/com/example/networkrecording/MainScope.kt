@@ -1,8 +1,9 @@
 package com.example.networkrecording
 
 import com.example.networkrecording.network.GithubService
+import com.example.recorder.BaseInterceptor
 import com.example.recorder.NetworkRecorder
-import com.example.recorder.RecordingInterceptor
+import com.example.recorder.ReplayInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -23,14 +24,17 @@ interface MainScope {
 
     @motif.Objects
     abstract class Objects {
-        fun recordingInterceptor(): RecordingInterceptor = RecordingInterceptor()
+        fun recordingInterceptor(): BaseInterceptor {
+//            return RecordingInterceptor()
+            return ReplayInterceptor()
+        }
 
-        fun networkRecorder(recordingInterceptor: RecordingInterceptor): NetworkRecorder =
-            NetworkRecorder(recordingInterceptor)
+        fun networkRecorder(interceptor: BaseInterceptor): NetworkRecorder =
+            NetworkRecorder(interceptor)
 
-        fun okHttpClient(recordingInterceptor: RecordingInterceptor): OkHttpClient =
+        fun okHttpClient(interceptor: BaseInterceptor): OkHttpClient =
             OkHttpClient.Builder()
-                .addInterceptor(recordingInterceptor)
+                .addInterceptor(interceptor)
                 .build()
 
         @ExperimentalSerializationApi

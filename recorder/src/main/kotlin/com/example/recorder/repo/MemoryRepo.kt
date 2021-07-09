@@ -39,6 +39,11 @@ internal class MemoryRepo {
         records[requestRecord] = list
     }
 
+    fun write(requestRecord: RequestRecord, responseRecords: MutableList<ResponseRecord>) {
+        records[requestRecord] = responseRecords
+    }
+
+
     fun getAllRecordings(): Map<RequestRecord, List<ResponseRecord>> {
         return records.toMap()
     }
