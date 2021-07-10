@@ -1,5 +1,5 @@
 plugins {
-    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
     id 'com.google.protobuf'
 }
 
@@ -13,6 +13,7 @@ sourceSets{
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // You need to depend on the lite runtime library, not protobuf-java
     implementation 'com.google.protobuf:protobuf-javalite:3.8.0'
     implementation("com.squareup.okhttp3:okhttp:$okhttp_version")

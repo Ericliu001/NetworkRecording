@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ResponseBodyRecord(
     val bytes: Array<Byte>,
-    val contentType: String? = null // TODO: 7/8/21 a default type?
+    val contentType: String? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
