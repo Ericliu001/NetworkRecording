@@ -1,3 +1,4 @@
 rootProject.name = "NetworkRecording"
 include ':sample'
 include ':recorder'
+include ':model-protobuf'
