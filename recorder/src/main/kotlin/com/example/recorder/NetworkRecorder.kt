@@ -3,6 +3,8 @@ package com.example.recorder
 import com.example.recorder.data.ResponseRecord
 import com.example.recorder.repo.DiskRepo
 import com.example.recorder.repo.MemoryRepo
+import com.example.recorder.utils.fromHttpRequest
+import com.example.recorder.utils.fromHttpResponse
 import okhttp3.Request
 import okhttp3.Response
 import java.io.File

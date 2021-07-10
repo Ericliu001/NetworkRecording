@@ -1,4 +1,4 @@
-package com.example.recorder
+package com.example.recorder.utils
 
 import com.example.recorder.data.RequestBodyRecord
 import com.example.recorder.data.RequestRecord
