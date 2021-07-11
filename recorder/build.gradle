@@ -1,9 +1,11 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm'
+    id 'kotlin'
     id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 dependencies {
+    api project(":model-kotlinx-serialization")
+    api project(":model-protobuf")
     implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_serialization_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

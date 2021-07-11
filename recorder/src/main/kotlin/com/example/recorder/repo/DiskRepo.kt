@@ -38,7 +38,7 @@ internal class DiskRepo(private val root: File) {
         val stream = RandomAccessFile(outputFile, "rw")
         val channel: FileChannel = stream.getChannel()
 
-        var lock: FileLock? = null
+        var lock: FileLock?
         try {
             lock = channel.tryLock()
         } catch (e: OverlappingFileLockException) {

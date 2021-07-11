@@ -3,7 +3,6 @@ package com.example.networkrecording
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,7 +14,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,10 +33,6 @@ class MainActivity : AppCompatActivity() {
         mainScope = MainScopeImpl()
 
         networkRecorder = mainScope.networkRecorder()
-
-        val externalStorageVolumes: Array<out File> =
-            ContextCompat.getExternalFilesDirs(applicationContext, null)
-        val primaryExternalStorage = externalStorageVolumes[0]
 
         getExternalFilesDir(null)?.let { root ->
             networkRecorder.startRecording(root)

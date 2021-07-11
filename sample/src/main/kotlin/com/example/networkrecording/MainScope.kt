@@ -4,7 +4,6 @@ import com.example.networkrecording.network.GithubService
 import com.example.recorder.BaseInterceptor
 import com.example.recorder.NetworkRecorder
 import com.example.recorder.RecordingInterceptor
-import com.example.recorder.ReplayInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.reactivex.schedulers.Schedulers
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -40,7 +39,6 @@ interface MainScope {
 
         @ExperimentalSerializationApi
         fun retrofit(okHttpClient: OkHttpClient): Retrofit {
-            val contentType = MediaType.get("application/json")
             return Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
                 .client(okHttpClient)
