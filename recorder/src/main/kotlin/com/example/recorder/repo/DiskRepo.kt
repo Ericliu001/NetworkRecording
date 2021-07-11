@@ -1,7 +1,7 @@
 package com.example.recorder.repo
 
-import com.example.recorder.data.RequestRecord
-import com.example.recorder.data.ResponseRecord
+import com.example.model.RequestRecord
+import com.example.model.ResponseRecord
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

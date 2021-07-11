@@ -1,4 +1,4 @@
-package com.example.recorder.data
+package com.example.model
 
 import kotlinx.serialization.Serializable
 

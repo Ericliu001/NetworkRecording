@@ -1,13 +1,10 @@
 package com.example.recorder.utils
 
-import com.example.recorder.data.RequestBodyRecord
-import com.example.recorder.data.RequestRecord
-import com.example.recorder.data.ResponseBodyRecord
-import com.example.recorder.data.ResponseRecord
-import okhttp3.Headers
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
+import com.example.model.RequestBodyRecord
+import com.example.model.RequestRecord
+import com.example.model.ResponseBodyRecord
+import com.example.model.ResponseRecord
+import okhttp3.*
 import okio.Buffer
 import java.io.IOException
 
@@ -44,7 +41,7 @@ fun toHttpResponseBuilder(responseRecord: ResponseRecord): okhttp3.Response.Buil
         .message(responseRecord.message)
         .headers(headersBuilder.build())
         .body(okhttpResponseBody)
-        .protocol(responseRecord.protocol)
+        .protocol(Protocol.get(responseRecord.protocol.toString()))
 }
 
 /**
@@ -84,7 +81,7 @@ fun fromHttpResponse(okhttpResponse: okhttp3.Response): ResponseRecord {
         okhttpResponse.message(),
         okhttpResponse.headers().toMultimap(),
         fromHttpResponesBody(okhttpResponse.peekBody(Long.MAX_VALUE)),
-        okhttpResponse.protocol()
+        com.example.model.Protocol[(okhttpResponse.protocol().toString())]
     )
 }
 

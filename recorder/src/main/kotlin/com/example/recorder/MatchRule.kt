@@ -1,6 +1,6 @@
 package com.example.recorder
 
-import com.example.recorder.data.RequestRecord
+import com.example.model.RequestRecord
 
 interface MatchRule {
     fun isMatch(a: RequestRecord, b: RequestRecord): Boolean

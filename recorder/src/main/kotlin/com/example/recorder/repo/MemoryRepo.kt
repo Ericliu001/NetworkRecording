@@ -2,8 +2,8 @@ package com.example.recorder.repo
 
 import com.example.recorder.DefaultMatcheRule
 import com.example.recorder.MatchRule
-import com.example.recorder.data.RequestRecord
-import com.example.recorder.data.ResponseRecord
+import com.example.model.RequestRecord
+import com.example.model.ResponseRecord
 
 internal class MemoryRepo {
     private val records = mutableMapOf<RequestRecord, MutableList<ResponseRecord>>()

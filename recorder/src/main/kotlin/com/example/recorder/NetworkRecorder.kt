@@ -1,6 +1,6 @@
 package com.example.recorder
 
-import com.example.recorder.data.ResponseRecord
+import com.example.model.ResponseRecord
 import com.example.recorder.repo.DiskRepo
 import com.example.recorder.repo.MemoryRepo
 import com.example.recorder.utils.fromHttpRequest

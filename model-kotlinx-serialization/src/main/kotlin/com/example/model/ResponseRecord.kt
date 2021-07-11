@@ -1,7 +1,6 @@
-package com.example.recorder.data
+package com.example.model
 
 import kotlinx.serialization.Serializable
-import okhttp3.Protocol
 
 @Serializable
 data class ResponseRecord(
