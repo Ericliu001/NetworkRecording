@@ -9,7 +9,7 @@ data class ResponseBodyRecord(
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ResponseBodyRecord) return false
+        if (other !is ResponseBodyModel) return false
 
         if (!bytes.contentEquals(other.bytes)) return false
 

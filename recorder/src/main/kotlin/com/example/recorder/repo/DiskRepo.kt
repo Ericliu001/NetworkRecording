@@ -1,7 +1,7 @@
 package com.example.recorder.repo
 
-import com.example.model.RequestRecord
-import com.example.model.ResponseRecord
+import com.example.model.RequestModel
+import com.example.model.ResponseModel
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -16,19 +16,19 @@ private const val FILENAME = "record"
 
 internal class DiskRepo(private val root: File) {
 
-    fun writeRecords(records: Map<RequestRecord, List<ResponseRecord>>) {
+    fun writeRecords(records: Map<RequestModel, List<ResponseModel>>) {
         for ((request, responses) in records) {
             writeToFile(request, responses)
         }
     }
 
-    private fun writeToFile(requestRecord: RequestRecord, responses: List<ResponseRecord>) {
+    private fun writeToFile(requestModel: RequestModel, responses: List<ResponseModel>) {
 
         val encodedRecords = Json {
             allowStructuredMapKeys = true
-        }.encodeToString(Pair(requestRecord, responses))
+        }.encodeToString(Pair(requestModel, responses))
 
-        val outputFile = getFileByRequestUrl(requestRecord)
+        val outputFile = getFileByRequestUrl(requestModel)
         if (outputFile.exists()) {
             outputFile.delete()
         }
@@ -57,25 +57,25 @@ internal class DiskRepo(private val root: File) {
         channel.close()
     }
 
-    private fun getFileByRequestUrl(requestRecord: RequestRecord): File {
+    private fun getFileByRequestUrl(requestModel: RequestModel): File {
         // TODO: 7/13/21 read all responses with different suffices
-        val path = root.absolutePath + requestRecord.url
+        val path = root.absolutePath + requestModel.url
         File(path).mkdirs()
-        val suffix = requestRecord.hashCode()
+        val suffix = requestModel.hashCode()
         val outputFile = File(path, FILENAME + "_" + suffix)
         return outputFile
     }
 
     fun read(
-        requestRecord: RequestRecord,
-    ): MutableList<ResponseRecord> {
-        val inputFile = getFileByRequestUrl(requestRecord)
+        requestModel: RequestModel,
+    ): MutableList<ResponseModel> {
+        val inputFile = getFileByRequestUrl(requestModel)
         if (!inputFile.exists()) {
             return mutableListOf()
         }
         val outputString = String(inputFile.readBytes())
         val pair =
-            Json.decodeFromString<Pair<RequestRecord, MutableList<ResponseRecord>>>(outputString)
+            Json.decodeFromString<Pair<RequestModel, MutableList<ResponseModel>>>(outputString)
         return pair.second
     }
 

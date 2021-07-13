@@ -1,9 +1,6 @@
 package com.example.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class RequestBodyRecord(
+data class RequestBodyModel(
     val bytes: Array<Byte>,
     val contentType: String? = null
 ){

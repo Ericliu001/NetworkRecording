@@ -1,6 +1,6 @@
 package com.example.recorder
 
-import com.example.model.ResponseRecord
+import com.example.model.ResponseModel
 import com.example.recorder.repo.DiskRepo
 import com.example.recorder.repo.MemoryRepo
 import com.example.recorder.utils.fromHttpRequest
@@ -32,7 +32,7 @@ class NetworkRecorder(val interceptor: BaseInterceptor) {
 
     fun retrieveResponse(
         okhttpRequest: Request
-    ): List<ResponseRecord> {
+    ): List<ResponseModel> {
         val requestRecord = fromHttpRequest(okhttpRequest)
 
         val fromMemory = memoryRepo.read(requestRecord, matchRule)

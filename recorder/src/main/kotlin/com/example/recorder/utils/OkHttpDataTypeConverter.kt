@@ -1,15 +1,15 @@
 package com.example.recorder.utils
 
-import com.example.model.RequestBodyRecord
-import com.example.model.RequestRecord
-import com.example.model.ResponseBodyRecord
-import com.example.model.ResponseRecord
+import com.example.model.RequestBodyModel
+import com.example.model.RequestModel
+import com.example.model.ResponseBodyModel
+import com.example.model.ResponseModel
 import okhttp3.*
 import okio.Buffer
 import java.io.IOException
 
-internal fun fromHttpRequest(okhttpRequest: okhttp3.Request): RequestRecord {
-    return RequestRecord(
+internal fun fromHttpRequest(okhttpRequest: okhttp3.Request): RequestModel {
+    return RequestModel(
         okhttpRequest.url().encodedPath(),
         okhttpRequest.method(),
         okhttpRequest.headers().toMultimap(),
@@ -17,8 +17,8 @@ internal fun fromHttpRequest(okhttpRequest: okhttp3.Request): RequestRecord {
     )
 }
 
-fun toHttpResponseBuilder(responseRecord: ResponseRecord): okhttp3.Response.Builder {
-    val responseBody = responseRecord.responseBody
+fun toHttpResponseBuilder(responseModel: ResponseModel): okhttp3.Response.Builder {
+    val responseBody = responseModel.responseBody
     var okhttpResponseBody: ResponseBody? = null
     val mediaType = MediaType.parse(responseBody?.contentType ?: "")
     responseBody?.let {
@@ -30,18 +30,18 @@ fun toHttpResponseBuilder(responseRecord: ResponseRecord): okhttp3.Response.Buil
     }
 
     val headersBuilder = Headers.Builder()
-    for ((name, values) in responseRecord.headers) {
+    for ((name, values) in responseModel.headers) {
         for (value in values) {
             headersBuilder.add(name, value)
         }
     }
 
     return okhttp3.Response.Builder()
-        .code(responseRecord.code)
-        .message(responseRecord.message)
+        .code(responseModel.code)
+        .message(responseModel.message)
         .headers(headersBuilder.build())
         .body(okhttpResponseBody)
-        .protocol(Protocol.get(responseRecord.protocol.toString()))
+        .protocol(Protocol.get(responseModel.protocol.toString()))
 }
 
 /**
@@ -75,8 +75,8 @@ so it will not close response.
  *
  *
  */
-fun fromHttpResponse(okhttpResponse: okhttp3.Response): ResponseRecord {
-    return ResponseRecord(
+fun fromHttpResponse(okhttpResponse: okhttp3.Response): ResponseModel {
+    return ResponseModel(
         okhttpResponse.code(),
         okhttpResponse.message(),
         okhttpResponse.headers().toMultimap(),
@@ -85,7 +85,7 @@ fun fromHttpResponse(okhttpResponse: okhttp3.Response): ResponseRecord {
     )
 }
 
-private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RequestBodyRecord? {
+private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RequestBodyModel? {
     okhttpRequestBody?.let { body ->
         val content: Array<Byte>
         val contentType: String?
@@ -98,7 +98,7 @@ private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RequestBodyRec
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
-        return RequestBodyRecord(
+        return RequestBodyModel(
             content,
             contentType
         )
@@ -107,9 +107,9 @@ private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RequestBodyRec
     return null
 }
 
-private fun fromHttpResponesBody(okhttpResponseBody: ResponseBody?): ResponseBodyRecord? {
+private fun fromHttpResponesBody(okhttpResponseBody: ResponseBody?): ResponseBodyModel? {
     okhttpResponseBody?.let { body ->
-        return ResponseBodyRecord(
+        return ResponseBodyModel(
             body.bytes().toTypedArray(),
             body.contentType()?.toString()
         )

@@ -1,6 +1,7 @@
 package com.example.networkrecording
 
 import com.example.networkrecording.network.GithubService
+import com.example.networkrecording.network.LoggingInterceptor
 import com.example.recorder.BaseInterceptor
 import com.example.recorder.NetworkRecorder
 import com.example.recorder.RecordingInterceptor
@@ -26,7 +27,7 @@ interface MainScope {
     @motif.Objects
     abstract class Objects {
         fun mode(): Mode {
-            return Mode.READING
+            return Mode.WRITING
         }
 
         fun recordingInterceptor(mode: Mode): BaseInterceptor {
@@ -41,6 +42,7 @@ interface MainScope {
 
         fun okHttpClient(interceptor: BaseInterceptor): OkHttpClient =
             OkHttpClient.Builder()
+                .addInterceptor(LoggingInterceptor())
                 .addInterceptor(interceptor)
                 .build()
 
