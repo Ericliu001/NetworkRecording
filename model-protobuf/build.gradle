@@ -1,0 +1,36 @@
+plugins {
+    id 'kotlin'
+    id 'com.google.protobuf'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+sourceSets{
+    main.java.srcDirs += ['build/generated/source/proto/main/java']
+}
+
+dependencies {
+    api project(":model-base")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    // You need to depend on the lite runtime library, not protobuf-java
+    implementation 'com.google.protobuf:protobuf-javalite:3.8.0'
+    implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.8.0'
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option "lite"
+                }
+            }
+        }
+    }
+}

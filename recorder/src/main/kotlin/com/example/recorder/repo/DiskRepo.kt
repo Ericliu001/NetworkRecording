@@ -1,10 +1,8 @@
 package com.example.recorder.repo
 
-import com.example.recorder.data.RequestRecord
-import com.example.recorder.data.ResponseRecord
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import com.example.Serializer
+import com.example.model.BaseRequest
+import com.example.model.BaseResponse
 import java.io.File
 import java.io.RandomAccessFile
 import java.nio.ByteBuffer
@@ -14,21 +12,23 @@ import java.nio.channels.OverlappingFileLockException
 
 private const val FILENAME = "record"
 
-internal class DiskRepo(private val root: File) {
+internal class DiskRepo<S : Serializer>(
+    private val root: File,
+    private val serializer: S
+) {
 
-    fun writeRecords(records: Map<RequestRecord, List<ResponseRecord>>) {
+    fun writeRecords(records: Map<BaseRequest, List<BaseResponse>>) {
         for ((request, responses) in records) {
             writeToFile(request, responses)
         }
     }
 
-    private fun writeToFile(requestRecord: RequestRecord, responses: List<ResponseRecord>) {
+    private fun writeToFile(baseRequest: BaseRequest, responses: List<BaseResponse>) {
 
-        val encodedRecords = Json {
-            allowStructuredMapKeys = true
-        }.encodeToString(Pair(requestRecord, responses))
+        val strBytes =
+            serializer.encodeToByteArray(Pair(baseRequest, responses))
 
-        val outputFile = getFileByRequestUrl(requestRecord)
+        val outputFile = getFileByRequestUrl(baseRequest)
         if (outputFile.exists()) {
             outputFile.delete()
         }
@@ -38,7 +38,7 @@ internal class DiskRepo(private val root: File) {
         val stream = RandomAccessFile(outputFile, "rw")
         val channel: FileChannel = stream.getChannel()
 
-        var lock: FileLock? = null
+        val lock: FileLock?
         try {
             lock = channel.tryLock()
         } catch (e: OverlappingFileLockException) {
@@ -47,7 +47,6 @@ internal class DiskRepo(private val root: File) {
             return
         }
 
-        val strBytes: ByteArray = encodedRecords.toByteArray()
         val buffer: ByteBuffer = ByteBuffer.allocate(strBytes.size)
         buffer.put(strBytes)
         buffer.flip()
@@ -57,24 +56,22 @@ internal class DiskRepo(private val root: File) {
         channel.close()
     }
 
-    private fun getFileByRequestUrl(requestRecord: RequestRecord): File {
-        val path = root.absolutePath + requestRecord.url
+    private fun getFileByRequestUrl(baseRequest: BaseRequest): File {
+        // TODO: 7/13/21 read all responses with different suffices
+        val path = root.absolutePath + baseRequest.url
         File(path).mkdirs()
-        val suffix = requestRecord.hashCode()
-        val outputFile = File(path, FILENAME + "_" + suffix)
-        return outputFile
+        val suffix = baseRequest.hashCode()
+        return File(path, FILENAME + "_" + suffix)
     }
 
     fun read(
-        requestRecord: RequestRecord,
-    ): MutableList<ResponseRecord> {
-        val inputFile = getFileByRequestUrl(requestRecord)
+        baseRequest: BaseRequest,
+    ): MutableList<BaseResponse> {
+        val inputFile = getFileByRequestUrl(baseRequest)
         if (!inputFile.exists()) {
             return mutableListOf()
         }
-        val outputString = String(inputFile.readBytes())
-        val pair =
-            Json.decodeFromString<Pair<RequestRecord, MutableList<ResponseRecord>>>(outputString)
+        val pair = serializer.decodeFromByteArray(inputFile.readBytes())
         return pair.second
     }
 

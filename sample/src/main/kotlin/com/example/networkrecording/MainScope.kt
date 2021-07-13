@@ -1,6 +1,7 @@
 package com.example.networkrecording
 
 import com.example.networkrecording.network.GithubService
+import com.example.networkrecording.network.LoggingInterceptor
 import com.example.recorder.BaseInterceptor
 import com.example.recorder.NetworkRecorder
 import com.example.recorder.RecordingInterceptor
@@ -25,9 +26,15 @@ interface MainScope {
 
     @motif.Objects
     abstract class Objects {
-        fun recordingInterceptor(): BaseInterceptor {
-            return RecordingInterceptor()
-//            return ReplayInterceptor()
+        fun mode(): Mode {
+            return Mode.READING
+        }
+
+        fun recordingInterceptor(mode: Mode): BaseInterceptor {
+            return when (mode) {
+                Mode.READING -> ReplayInterceptor()
+                Mode.WRITING -> RecordingInterceptor()
+            }
         }
 
         fun networkRecorder(interceptor: BaseInterceptor): NetworkRecorder =
@@ -35,12 +42,12 @@ interface MainScope {
 
         fun okHttpClient(interceptor: BaseInterceptor): OkHttpClient =
             OkHttpClient.Builder()
+//                .addInterceptor(LoggingInterceptor())
                 .addInterceptor(interceptor)
                 .build()
 
         @ExperimentalSerializationApi
         fun retrofit(okHttpClient: OkHttpClient): Retrofit {
-            val contentType = MediaType.get("application/json")
             return Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
                 .client(okHttpClient)

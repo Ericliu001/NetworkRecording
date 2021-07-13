@@ -11,6 +11,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/model-base" />
+            <option value="$PROJECT_DIR$/model-kotlinx-serialization" />
+            <option value="$PROJECT_DIR$/model-protobuf" />
             <option value="$PROJECT_DIR$/recorder" />
             <option value="$PROJECT_DIR$/sample" />
           </set>

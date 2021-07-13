@@ -2,18 +2,18 @@ package com.example.recorder.repo
 
 import com.example.recorder.DefaultMatcheRule
 import com.example.recorder.MatchRule
-import com.example.recorder.data.RequestRecord
-import com.example.recorder.data.ResponseRecord
+import com.example.model.BaseRequest
+import com.example.model.BaseResponse
 
 internal class MemoryRepo {
-    private val records = mutableMapOf<RequestRecord, MutableList<ResponseRecord>>()
+    private val records = mutableMapOf<BaseRequest, MutableList<BaseResponse>>()
 
     fun read(
-        requestRecord: RequestRecord,
+        baseRequest: BaseRequest,
         matchRule: MatchRule = DefaultMatcheRule.INSTANCE
-    ): List<ResponseRecord> {
+    ): List<BaseResponse> {
         for ((recordedRequest, recordedResponses) in records) {
-            if (matchRule.isMatch(recordedRequest, requestRecord)) {
+            if (matchRule.isMatch(recordedRequest, baseRequest)) {
                 return recordedResponses.toList()
             }
         }
@@ -22,29 +22,29 @@ internal class MemoryRepo {
     }
 
     fun update(
-        requestRecord: RequestRecord,
-        responses: List<ResponseRecord>,
+        baseRequest: BaseRequest,
+        responses: List<BaseResponse>,
         matchRule: MatchRule = DefaultMatcheRule.INSTANCE
     ) {
         for (key in records.keys) {
-            if (matchRule.isMatch(key, requestRecord)) {
+            if (matchRule.isMatch(key, baseRequest)) {
                 records[key] = responses.toMutableList()
             }
         }
     }
 
-    fun write(requestRecord: RequestRecord, responseRecord: ResponseRecord) {
-        val list = records.getOrDefault(requestRecord, mutableListOf())
-        list.add(responseRecord)
-        records[requestRecord] = list
+    fun write(baseRequest: BaseRequest, baseResponse: BaseResponse) {
+        val list = records.getOrDefault(baseRequest, mutableListOf())
+        list.add(baseResponse)
+        records[baseRequest] = list
     }
 
-    fun write(requestRecord: RequestRecord, responseRecords: MutableList<ResponseRecord>) {
-        records[requestRecord] = responseRecords
+    fun write(baseRequest: BaseRequest, baseResponses: MutableList<BaseResponse>) {
+        records[baseRequest] = baseResponses
     }
 
 
-    fun getAllRecordings(): Map<RequestRecord, List<ResponseRecord>> {
+    fun getAllRecordings(): Map<BaseRequest, List<BaseResponse>> {
         return records.toMap()
     }
 }

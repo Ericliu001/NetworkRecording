@@ -1,3 +1,6 @@
 rootProject.name = "NetworkRecording"
 include ':sample'
 include ':recorder'
+include ':model-protobuf'
+include ':model-kotlinx-serialization'
+include ':model-base'

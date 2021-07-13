@@ -1,18 +1,15 @@
-package com.example.recorder
+package com.example.recorder.utils
 
-import com.example.recorder.data.RequestBodyRecord
-import com.example.recorder.data.RequestRecord
-import com.example.recorder.data.ResponseBodyRecord
-import com.example.recorder.data.ResponseRecord
-import okhttp3.Headers
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
+import com.example.model.BaseRequest
+import com.example.model.BaseRequestBody
+import com.example.model.BaseResponse
+import com.example.model.BaseResponseBody
+import okhttp3.*
 import okio.Buffer
 import java.io.IOException
 
-internal fun fromHttpRequest(okhttpRequest: okhttp3.Request): RequestRecord {
-    return RequestRecord(
+fun fromHttpRequest(okhttpRequest: okhttp3.Request): BaseRequest {
+    return BaseRequest(
         okhttpRequest.url().encodedPath(),
         okhttpRequest.method(),
         okhttpRequest.headers().toMultimap(),
@@ -20,88 +17,58 @@ internal fun fromHttpRequest(okhttpRequest: okhttp3.Request): RequestRecord {
     )
 }
 
-fun toHttpResponseBuilder(responseRecord: ResponseRecord): okhttp3.Response.Builder {
-    val responseBody = responseRecord.responseBody
+fun fromHttpResponse(okhttpResponse: okhttp3.Response): BaseResponse {
+    return BaseResponse(
+        okhttpResponse.code(),
+        okhttpResponse.message(),
+        okhttpResponse.headers().toMultimap(),
+        // use okhttp3.Response.peekBody instead okhttp3.Response.body of  so the response is not closed.
+        fromHttpResponesBody(okhttpResponse.peekBody(Long.MAX_VALUE)),
+        okhttpResponse.protocol()
+    )
+}
+
+fun toHttpResponseBuilder(baseResponse: BaseResponse): okhttp3.Response.Builder {
+    val responseBody = baseResponse.body
     var okhttpResponseBody: ResponseBody? = null
     val mediaType = MediaType.parse(responseBody?.contentType ?: "")
     responseBody?.let {
         okhttpResponseBody =
             ResponseBody.create(
                 mediaType,
-                responseBody.bytes.toByteArray()
+                responseBody.bytes
             )
     }
 
     val headersBuilder = Headers.Builder()
-    for ((name, values) in responseRecord.headers) {
+    for ((name, values) in baseResponse.headers) {
         for (value in values) {
             headersBuilder.add(name, value)
         }
     }
 
     return okhttp3.Response.Builder()
-        .code(responseRecord.code)
-        .message(responseRecord.message)
+        .code(baseResponse.code)
+        .message(baseResponse.message)
         .headers(headersBuilder.build())
         .body(okhttpResponseBody)
-        .protocol(responseRecord.protocol)
+        .protocol(Protocol.get(baseResponse.protocol.toString()))
 }
 
-/**
- *
- *
- *
- *
- *
- * (https://github.com/square/retrofit/issues/3336)
-Response.body().string()
-I was doing because above code was helping me to find out that if there is any error than what kind of error it is....
-
-if it is AUTH_ERROR, I have to generate new token and append it to request header.
-
-According to retrofit document, if we call any of below method then response will be closed, which means it's not available to consume by the normal Retrofit internals.
-
-Response.close()
-Response.body().close()
-Response.body().source().close()
-Response.body().charStream().close()
-Response.body().byteStream().close()
-Response.body().bytes()
-Response.body().string()
-So to read data, I will use
-
-response.peekBody(2048).string()
-instead of
-
-response.body().string(),
-so it will not close response.
- *
- *
- */
-fun fromHttpResponse(okhttpResponse: okhttp3.Response): ResponseRecord {
-    return ResponseRecord(
-        okhttpResponse.code(),
-        okhttpResponse.message(),
-        okhttpResponse.headers().toMultimap(),
-        fromHttpResponesBody(okhttpResponse.peekBody(Long.MAX_VALUE)),
-        okhttpResponse.protocol()
-    )
-}
-
-private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RequestBodyRecord? {
+private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): BaseRequestBody? {
     okhttpRequestBody?.let { body ->
-        val content: Array<Byte>
+        val content: ByteArray
         val contentType: String?
 
         try {
             val buffer = Buffer()
             body.writeTo(buffer)
-            content = buffer.readByteArray().toTypedArray()
+            content = buffer.readByteArray()
             contentType = body.contentType().toString()
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
-        return RequestBodyRecord(
+        return BaseRequestBody(
             content,
             contentType
         )
@@ -110,10 +77,10 @@ private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RequestBodyRec
     return null
 }
 
-private fun fromHttpResponesBody(okhttpResponseBody: ResponseBody?): ResponseBodyRecord? {
+private fun fromHttpResponesBody(okhttpResponseBody: ResponseBody?): BaseResponseBody? {
     okhttpResponseBody?.let { body ->
-        return ResponseBodyRecord(
-            body.bytes().toTypedArray(),
+        return BaseResponseBody(
+            body.bytes(),
             body.contentType()?.toString()
         )
     }
