@@ -28,7 +28,7 @@ internal object ProtoModelConverter {
             protoResponse.message,
             fromProtoHeaders(protoResponse.headersMap),
             fromProtoResponseBody(protoResponse.responseBody),
-            fromProtoProtocol(protoResponse.protocal)
+            fromProtoProtocol(protoResponse.protocol)
         )
     }
 
@@ -38,7 +38,7 @@ internal object ProtoModelConverter {
             .setMessage(baseResponse.message)
             .putAllHeaders(toProtoHeaders(baseResponse.headers))
             .setResponseBody(toProtoResponseBody(baseResponse.body))
-            .setProtocal(toProtoProtocol(baseResponse.protocol))
+            .setProtocol(toProtoProtocol(baseResponse.protocol))
             .build()
     }
 
