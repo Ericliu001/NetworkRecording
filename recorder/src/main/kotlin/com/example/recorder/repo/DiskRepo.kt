@@ -25,8 +25,8 @@ internal class DiskRepo<S : Serializer>(
 
     private fun writeToFile(baseRequest: BaseRequest, responses: List<BaseResponse>) {
 
-        val encodedRecords =
-        serializer.encodeToString(Pair(baseRequest, responses))
+        val strBytes =
+            serializer.encodeToByteArray(Pair(baseRequest, responses))
 
         val outputFile = getFileByRequestUrl(baseRequest)
         if (outputFile.exists()) {
@@ -38,7 +38,7 @@ internal class DiskRepo<S : Serializer>(
         val stream = RandomAccessFile(outputFile, "rw")
         val channel: FileChannel = stream.getChannel()
 
-        var lock: FileLock?
+        val lock: FileLock?
         try {
             lock = channel.tryLock()
         } catch (e: OverlappingFileLockException) {
@@ -47,7 +47,6 @@ internal class DiskRepo<S : Serializer>(
             return
         }
 
-        val strBytes: ByteArray = encodedRecords.toByteArray()
         val buffer: ByteBuffer = ByteBuffer.allocate(strBytes.size)
         buffer.put(strBytes)
         buffer.flip()
@@ -62,8 +61,7 @@ internal class DiskRepo<S : Serializer>(
         val path = root.absolutePath + baseRequest.url
         File(path).mkdirs()
         val suffix = baseRequest.hashCode()
-        val outputFile = File(path, FILENAME + "_" + suffix)
-        return outputFile
+        return File(path, FILENAME + "_" + suffix)
     }
 
     fun read(
@@ -73,8 +71,7 @@ internal class DiskRepo<S : Serializer>(
         if (!inputFile.exists()) {
             return mutableListOf()
         }
-        val outputString = String(inputFile.readBytes())
-        val pair = serializer.decodeFromString(outputString)
+        val pair = serializer.decodeFromByteArray(inputFile.readBytes())
         return pair.second
     }
 

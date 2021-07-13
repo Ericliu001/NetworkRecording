@@ -3,7 +3,6 @@ package com.example.recorder
 import com.example.KTSSerializer
 import com.example.Serializer
 import com.example.model.BaseResponse
-import com.example.model.ProtoSerializer
 import com.example.recorder.repo.DiskRepo
 import com.example.recorder.repo.MemoryRepo
 import com.example.recorder.utils.fromHttpRequest
@@ -18,7 +17,7 @@ class NetworkRecorder(val interceptor: BaseInterceptor) {
     private lateinit var diskRepo: DiskRepo<out Serializer>
 
     fun startRecording(root: File) {
-        diskRepo = DiskRepo(root, ProtoSerializer()) // TODO: 7/13/21 need to be able to configure this.
+        diskRepo = DiskRepo(root, KTSSerializer()) // TODO: 7/13/21 need to be able to configure this.
         memoryRepo = MemoryRepo()
         interceptor.networkRecorder = this
     }

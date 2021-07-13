@@ -42,7 +42,7 @@ interface MainScope {
 
         fun okHttpClient(interceptor: BaseInterceptor): OkHttpClient =
             OkHttpClient.Builder()
-                .addInterceptor(LoggingInterceptor())
+//                .addInterceptor(LoggingInterceptor())
                 .addInterceptor(interceptor)
                 .build()
 

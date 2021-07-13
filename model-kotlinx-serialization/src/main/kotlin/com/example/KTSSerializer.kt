@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 import java.util.function.Consumer
 
 class KTSSerializer : Serializer {
-    override fun encodeToString(originalPair: Pair<BaseRequest, List<BaseResponse>>): String {
+    override fun encodeToByteArray(originalPair: Pair<BaseRequest, List<BaseResponse>>): ByteArray {
         val ktsRequest = toKTSRequest(originalPair.first)
         val ktsResponses = mutableListOf<KTSResponse>()
 
@@ -29,12 +29,12 @@ class KTSSerializer : Serializer {
         val serializablePair: Pair<KTSRequest, List<KTSResponse>> = Pair(ktsRequest, ktsResponses)
         return Json {
             allowStructuredMapKeys = true
-        }.encodeToString(serializablePair)
+        }.encodeToString(serializablePair).toByteArray()
     }
 
-    override fun decodeFromString(encodedString: String): Pair<BaseRequest, MutableList<BaseResponse>> {
+    override fun decodeFromByteArray(bytes: ByteArray): Pair<BaseRequest, MutableList<BaseResponse>> {
         val serializablePair: Pair<KTSRequest, List<KTSResponse>> =
-            Json.decodeFromString(encodedString)
+            Json.decodeFromString(String(bytes))
 
         val baseRequest = fromKTSRequest(serializablePair.first)
         val baseResponses = serializablePair.second.map { ktsResponse -> fromKTSResponse(ktsResponse) }.toMutableList()

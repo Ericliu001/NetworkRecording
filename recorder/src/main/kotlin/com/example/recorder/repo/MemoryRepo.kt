@@ -39,8 +39,8 @@ internal class MemoryRepo {
         records[baseRequest] = list
     }
 
-    fun write(baseRequest: BaseRequest, baseResponseRecords: MutableList<BaseResponse>) {
-        records[baseRequest] = baseResponseRecords
+    fun write(baseRequest: BaseRequest, baseResponses: MutableList<BaseResponse>) {
+        records[baseRequest] = baseResponses
     }
 
 

@@ -4,7 +4,7 @@ import com.example.model.BaseRequest
 import com.example.model.BaseResponse
 
 interface Serializer {
-    fun encodeToString(originalPair: Pair<BaseRequest, List<BaseResponse>>): String
+    fun encodeToByteArray(originalPair: Pair<BaseRequest, List<BaseResponse>>): ByteArray
 
-    fun decodeFromString(encodedString: String): Pair<BaseRequest, MutableList<BaseResponse>>
+    fun decodeFromByteArray(bytes: ByteArray): Pair<BaseRequest, MutableList<BaseResponse>>
 }
