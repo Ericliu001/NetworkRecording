@@ -36,7 +36,7 @@ internal class DiskRepo<S : Serializer>(
         outputFile.createNewFile()
 
         val stream = RandomAccessFile(outputFile, "rw")
-        val channel: FileChannel = stream.getChannel()
+        val channel: FileChannel = stream.channel
 
         val lock: FileLock?
         try {

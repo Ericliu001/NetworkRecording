@@ -5,16 +5,11 @@ import com.example.model.ProtoModelConverter.fromProtoRequest
 import com.example.model.ProtoModelConverter.fromProtoResponse
 import com.example.model.ProtoModelConverter.toProtoRequest
 import com.example.model.ProtoModelConverter.toProtoResponse
-import java.util.function.Consumer
 
 class ProtoSerializer : Serializer {
     override fun encodeToByteArray(originalPair: Pair<BaseRequest, List<BaseResponse>>): ByteArray {
         val protoRequest = toProtoRequest(originalPair.first)
-        val protoResponses = mutableListOf<ProtoModel.Response>()
-
-        originalPair.second.forEach(Consumer { baseResponse ->
-            protoResponses.add(toProtoResponse(baseResponse))
-        })
+        val protoResponses = originalPair.second.map { baseResponse -> toProtoResponse(baseResponse) }.toMutableList()
 
         return ProtoModel.Entry.newBuilder()
             .setRequest(protoRequest)

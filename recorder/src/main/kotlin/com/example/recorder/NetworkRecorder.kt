@@ -5,14 +5,14 @@ import com.example.model.BaseResponse
 import com.example.model.ProtoSerializer
 import com.example.recorder.repo.DiskRepo
 import com.example.recorder.repo.MemoryRepo
-import com.example.recorder.utils.fromHttpRequest
-import com.example.recorder.utils.fromHttpResponse
+import com.example.recorder.utils.OkhttpDataConverter.fromHttpRequest
+import com.example.recorder.utils.OkhttpDataConverter.fromHttpResponse
 import okhttp3.Request
 import okhttp3.Response
 import java.io.File
 
-class NetworkRecorder(val interceptor: BaseInterceptor) {
-    var matchRule: MatchRule = DefaultMatcheRule.INSTANCE
+class NetworkRecorder(private val interceptor: BaseInterceptor) {
+    private var matchRule: MatchRule = DefaultMatchRule.INSTANCE
     private lateinit var memoryRepo: MemoryRepo
     private lateinit var diskRepo: DiskRepo<out Serializer>
 

@@ -11,20 +11,11 @@ import com.example.model.KTSResponse
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.util.function.Consumer
 
 class KTSSerializer : Serializer {
     override fun encodeToByteArray(originalPair: Pair<BaseRequest, List<BaseResponse>>): ByteArray {
         val ktsRequest = toKTSRequest(originalPair.first)
-        val ktsResponses = mutableListOf<KTSResponse>()
-
-        originalPair.second.forEach(Consumer { baseResponse ->
-            ktsResponses.add(
-                toKTSResponse(
-                    baseResponse
-                )
-            )
-        })
+        val ktsResponses = originalPair.second.map { baseResponse -> toKTSResponse(baseResponse) }.toMutableList()
 
         val serializablePair: Pair<KTSRequest, List<KTSResponse>> = Pair(ktsRequest, ktsResponses)
         return Json {

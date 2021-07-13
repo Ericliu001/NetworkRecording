@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.networkrecording.ItemViewModel
-import com.example.networkrecording.R
 import com.example.networkrecording.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {

@@ -28,7 +28,7 @@ internal object ProtoModelConverter {
             protoResponse.message,
             fromProtoHeaders(protoResponse.headersMap),
             fromProtoResponseBody(protoResponse.responseBody),
-            fromProtoProtocal(protoResponse.protocal)
+            fromProtoProtocol(protoResponse.protocal)
         )
     }
 
@@ -78,8 +78,8 @@ internal object ProtoModelConverter {
             .build()
     }
 
-    private fun fromProtoProtocal(protoProtocal: ProtoModel.Protocol): Protocol {
-        return when (protoProtocal) {
+    private fun fromProtoProtocol(protoProtocol: ProtoModel.Protocol): Protocol {
+        return when (protoProtocol) {
             ProtoModel.Protocol.HTTP_1_0 -> Protocol.HTTP_1_0
             ProtoModel.Protocol.HTTP_1_1 -> Protocol.HTTP_1_1
             ProtoModel.Protocol.SPDY_3 -> Protocol.SPDY_3
@@ -90,8 +90,8 @@ internal object ProtoModelConverter {
         }
     }
 
-    private fun toProtoProtocol(okhttpProtocal: okhttp3.Protocol): ProtoModel.Protocol {
-        return when (okhttpProtocal) {
+    private fun toProtoProtocol(okhttpProtocol: okhttp3.Protocol): ProtoModel.Protocol {
+        return when (okhttpProtocol) {
             Protocol.HTTP_1_0 -> ProtoModel.Protocol.HTTP_1_0
             Protocol.HTTP_1_1 -> ProtoModel.Protocol.HTTP_1_1
             Protocol.SPDY_3 -> ProtoModel.Protocol.SPDY_3

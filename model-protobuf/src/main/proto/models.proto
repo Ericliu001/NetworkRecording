@@ -38,7 +38,7 @@ message Response{
   string message = 2;
   map<string, ListOfStrings> headers = 3;
   ResponseBody responseBody = 4;
-  Protocol protocal = 5;
+  Protocol protocol = 5;
 }
 
 message Entry{
