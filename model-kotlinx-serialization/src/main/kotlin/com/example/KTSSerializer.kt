@@ -1,9 +1,9 @@
 package com.example
 
-import com.example.KTSModelTypeConverter.fromKTSRequest
-import com.example.KTSModelTypeConverter.fromKTSResponse
-import com.example.KTSModelTypeConverter.toKTSRequest
-import com.example.KTSModelTypeConverter.toKTSResponse
+import com.example.KTSModelConverter.fromKTSRequest
+import com.example.KTSModelConverter.fromKTSResponse
+import com.example.KTSModelConverter.toKTSRequest
+import com.example.KTSModelConverter.toKTSResponse
 import com.example.model.BaseRequest
 import com.example.model.BaseResponse
 import com.example.model.KTSRequest
@@ -37,11 +37,7 @@ class KTSSerializer : Serializer {
             Json.decodeFromString(encodedString)
 
         val baseRequest = fromKTSRequest(serializablePair.first)
-        val baseResponses = mutableListOf<BaseResponse>()
-
-        serializablePair.second.forEach(Consumer { ktsResponse ->
-            baseResponses.add(fromKTSResponse(ktsResponse))
-        })
+        val baseResponses = serializablePair.second.map { ktsResponse -> fromKTSResponse(ktsResponse) }.toMutableList()
 
         return Pair(baseRequest, baseResponses)
     }

@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package com.example.model;
+option java_outer_classname = "ProtoModel";
 
 message ListOfStrings {
   repeated string str = 1;
@@ -23,19 +24,24 @@ message ResponseBody{
   string contentType = 2;
 }
 
-message Response{
-  enum Protocol{
-    HTTP_1_0 = 0;
-    HTTP_1_1 = 1;
-    SPDY_3 = 2;
-    HTTP_2 = 3;
-    H2_PRIOR_KNOWLEDGE = 4;
-    QUIC = 5;
-  }
+enum Protocol{
+  HTTP_1_0 = 0;
+  HTTP_1_1 = 1;
+  SPDY_3 = 2;
+  HTTP_2 = 3;
+  H2_PRIOR_KNOWLEDGE = 4;
+  QUIC = 5;
+}
 
+message Response{
   int32 code = 1;
   string message = 2;
   map<string, ListOfStrings> headers = 3;
   ResponseBody responseBody = 4;
   Protocol protocal = 5;
+}
+
+message Entry{
+  Request request = 1;
+  repeated Response responses = 2;
 }

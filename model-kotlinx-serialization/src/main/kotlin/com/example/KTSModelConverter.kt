@@ -2,7 +2,7 @@ package com.example
 
 import com.example.model.*
 
-internal object KTSModelTypeConverter {
+internal object KTSModelConverter {
 
     fun toKTSRequest(baseRequest: BaseRequest): KTSRequest {
         return KTSRequest(
