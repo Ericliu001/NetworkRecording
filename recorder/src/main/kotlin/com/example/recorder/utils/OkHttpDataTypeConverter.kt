@@ -81,7 +81,7 @@ fun fromHttpResponse(okhttpResponse: okhttp3.Response): ResponseRecord {
         okhttpResponse.message(),
         okhttpResponse.headers().toMultimap(),
         fromHttpResponesBody(okhttpResponse.peekBody(Long.MAX_VALUE)),
-        com.example.model.Protocol[(okhttpResponse.protocol().toString())]
+        okhttpResponse.protocol()
     )
 }
 

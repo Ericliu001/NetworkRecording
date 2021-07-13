@@ -58,6 +58,7 @@ internal class DiskRepo(private val root: File) {
     }
 
     private fun getFileByRequestUrl(requestRecord: RequestRecord): File {
+        // TODO: 7/13/21 read all responses with different suffices
         val path = root.absolutePath + requestRecord.url
         File(path).mkdirs()
         val suffix = requestRecord.hashCode()
