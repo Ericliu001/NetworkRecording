@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class KTSResponseBody(
-    val bytes: Array<Byte>,
+    val bytes: ByteArray,
     val contentType: String? = null
 ) {
     override fun equals(other: Any?): Boolean {

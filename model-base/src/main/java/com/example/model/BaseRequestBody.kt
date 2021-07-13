@@ -1,7 +1,7 @@
 package com.example.model
 
 data class BaseRequestBody(
-    val bytes: Array<Byte>,
+    val bytes: ByteArray,
     val contentType: String? = null
 ){
     override fun equals(other: Any?): Boolean {

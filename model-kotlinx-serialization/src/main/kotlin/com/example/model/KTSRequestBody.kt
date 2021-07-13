@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class KTSRequestBody(
-    val bytes: Array<Byte>,
+    val bytes: ByteArray,
     val contentType: String? = null
-){
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is BaseRequestBody) return false

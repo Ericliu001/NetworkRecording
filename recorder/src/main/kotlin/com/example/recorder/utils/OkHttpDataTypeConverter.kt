@@ -36,7 +36,7 @@ fun toHttpResponseBuilder(baseResponse: BaseResponse): okhttp3.Response.Builder 
         okhttpResponseBody =
             ResponseBody.create(
                 mediaType,
-                responseBody.bytes.toByteArray()
+                responseBody.bytes
             )
     }
 
@@ -57,13 +57,13 @@ fun toHttpResponseBuilder(baseResponse: BaseResponse): okhttp3.Response.Builder 
 
 private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): BaseRequestBody? {
     okhttpRequestBody?.let { body ->
-        val content: Array<Byte>
+        val content: ByteArray
         val contentType: String?
 
         try {
             val buffer = Buffer()
             body.writeTo(buffer)
-            content = buffer.readByteArray().toTypedArray()
+            content = buffer.readByteArray()
             contentType = body.contentType().toString()
         } catch (e: IOException) {
             throw RuntimeException(e)
@@ -80,7 +80,7 @@ private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): BaseRequestBod
 private fun fromHttpResponesBody(okhttpResponseBody: ResponseBody?): BaseResponseBody? {
     okhttpResponseBody?.let { body ->
         return BaseResponseBody(
-            body.bytes().toTypedArray(),
+            body.bytes(),
             body.contentType()?.toString()
         )
     }

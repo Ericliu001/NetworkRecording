@@ -44,7 +44,7 @@ internal object ProtoModelConverter {
 
     private fun fromProtoResponseBody(protoResponseBody: ProtoModel.ResponseBody): BaseResponseBody {
         return BaseResponseBody(
-            protoResponseBody.bytes.toByteArray().toTypedArray(),
+            protoResponseBody.bytes.toByteArray(),
             protoResponseBody.contentType
         )
     }
@@ -55,14 +55,14 @@ internal object ProtoModelConverter {
         }
 
         return ProtoModel.ResponseBody.newBuilder()
-            .setBytes(ByteString.copyFrom(baseResponseBody.bytes.toByteArray()))
+            .setBytes(ByteString.copyFrom(baseResponseBody.bytes))
             .setContentType(baseResponseBody.contentType)
             .build()
     }
 
     private fun fromProtoRequestBody(protoRequestBody: ProtoModel.RequestBody): BaseRequestBody {
         return BaseRequestBody(
-            protoRequestBody.bytes.toByteArray().toTypedArray(),
+            protoRequestBody.bytes.toByteArray(),
             protoRequestBody.contentType
         )
     }
@@ -73,7 +73,7 @@ internal object ProtoModelConverter {
         }
 
         return ProtoModel.RequestBody.newBuilder()
-            .setBytes(ByteString.copyFrom(baseRequestBody.bytes.toByteArray()))
+            .setBytes(ByteString.copyFrom(baseRequestBody.bytes))
             .setContentType(baseRequestBody.contentType)
             .build()
     }
