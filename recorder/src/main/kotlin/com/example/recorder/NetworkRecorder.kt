@@ -1,6 +1,8 @@
 package com.example.recorder
 
-import com.example.model.ResponseModel
+import com.example.KTSSerializer
+import com.example.Serializer
+import com.example.model.BaseResponse
 import com.example.recorder.repo.DiskRepo
 import com.example.recorder.repo.MemoryRepo
 import com.example.recorder.utils.fromHttpRequest
@@ -12,10 +14,10 @@ import java.io.File
 class NetworkRecorder(val interceptor: BaseInterceptor) {
     var matchRule: MatchRule = DefaultMatcheRule.INSTANCE
     private lateinit var memoryRepo: MemoryRepo
-    private lateinit var diskRepo: DiskRepo
+    private lateinit var diskRepo: DiskRepo<out Serializer>
 
     fun startRecording(root: File) {
-        diskRepo = DiskRepo(root)
+        diskRepo = DiskRepo(root, KTSSerializer()) // TODO: 7/13/21 need to be able to configure this.
         memoryRepo = MemoryRepo()
         interceptor.networkRecorder = this
     }
@@ -32,7 +34,7 @@ class NetworkRecorder(val interceptor: BaseInterceptor) {
 
     fun retrieveResponse(
         okhttpRequest: Request
-    ): List<ResponseModel> {
+    ): List<BaseResponse> {
         val requestRecord = fromHttpRequest(okhttpRequest)
 
         val fromMemory = memoryRepo.read(requestRecord, matchRule)

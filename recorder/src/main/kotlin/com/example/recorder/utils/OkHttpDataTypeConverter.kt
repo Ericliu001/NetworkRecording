@@ -1,15 +1,15 @@
 package com.example.recorder.utils
 
-import com.example.model.RequestBodyModel
-import com.example.model.RequestModel
-import com.example.model.ResponseBodyModel
-import com.example.model.ResponseModel
+import com.example.model.BaseRequest
+import com.example.model.BaseRequestBody
+import com.example.model.BaseResponse
+import com.example.model.BaseResponseBody
 import okhttp3.*
 import okio.Buffer
 import java.io.IOException
 
-internal fun fromHttpRequest(okhttpRequest: okhttp3.Request): RequestModel {
-    return RequestModel(
+fun fromHttpRequest(okhttpRequest: okhttp3.Request): BaseRequest {
+    return BaseRequest(
         okhttpRequest.url().encodedPath(),
         okhttpRequest.method(),
         okhttpRequest.headers().toMultimap(),
@@ -17,8 +17,19 @@ internal fun fromHttpRequest(okhttpRequest: okhttp3.Request): RequestModel {
     )
 }
 
-fun toHttpResponseBuilder(responseModel: ResponseModel): okhttp3.Response.Builder {
-    val responseBody = responseModel.responseBody
+fun fromHttpResponse(okhttpResponse: okhttp3.Response): BaseResponse {
+    return BaseResponse(
+        okhttpResponse.code(),
+        okhttpResponse.message(),
+        okhttpResponse.headers().toMultimap(),
+        // use okhttp3.Response.peekBody instead okhttp3.Response.body of  so the response is not closed.
+        fromHttpResponesBody(okhttpResponse.peekBody(Long.MAX_VALUE)),
+        okhttpResponse.protocol()
+    )
+}
+
+fun toHttpResponseBuilder(baseResponse: BaseResponse): okhttp3.Response.Builder {
+    val responseBody = baseResponse.body
     var okhttpResponseBody: ResponseBody? = null
     val mediaType = MediaType.parse(responseBody?.contentType ?: "")
     responseBody?.let {
@@ -30,62 +41,21 @@ fun toHttpResponseBuilder(responseModel: ResponseModel): okhttp3.Response.Builde
     }
 
     val headersBuilder = Headers.Builder()
-    for ((name, values) in responseModel.headers) {
+    for ((name, values) in baseResponse.headers) {
         for (value in values) {
             headersBuilder.add(name, value)
         }
     }
 
     return okhttp3.Response.Builder()
-        .code(responseModel.code)
-        .message(responseModel.message)
+        .code(baseResponse.code)
+        .message(baseResponse.message)
         .headers(headersBuilder.build())
         .body(okhttpResponseBody)
-        .protocol(Protocol.get(responseModel.protocol.toString()))
+        .protocol(Protocol.get(baseResponse.protocol.toString()))
 }
 
-/**
- *
- *
- *
- *
- *
- * (https://github.com/square/retrofit/issues/3336)
-Response.body().string()
-I was doing because above code was helping me to find out that if there is any error than what kind of error it is....
-
-if it is AUTH_ERROR, I have to generate new token and append it to request header.
-
-According to retrofit document, if we call any of below method then response will be closed, which means it's not available to consume by the normal Retrofit internals.
-
-Response.close()
-Response.body().close()
-Response.body().source().close()
-Response.body().charStream().close()
-Response.body().byteStream().close()
-Response.body().bytes()
-Response.body().string()
-So to read data, I will use
-
-response.peekBody(2048).string()
-instead of
-
-response.body().string(),
-so it will not close response.
- *
- *
- */
-fun fromHttpResponse(okhttpResponse: okhttp3.Response): ResponseModel {
-    return ResponseModel(
-        okhttpResponse.code(),
-        okhttpResponse.message(),
-        okhttpResponse.headers().toMultimap(),
-        fromHttpResponesBody(okhttpResponse.peekBody(Long.MAX_VALUE)),
-        okhttpResponse.protocol()
-    )
-}
-
-private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RequestBodyModel? {
+private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): BaseRequestBody? {
     okhttpRequestBody?.let { body ->
         val content: Array<Byte>
         val contentType: String?
@@ -98,7 +68,7 @@ private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RequestBodyMod
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
-        return RequestBodyModel(
+        return BaseRequestBody(
             content,
             contentType
         )
@@ -107,9 +77,9 @@ private fun fromHttpRequestBody(okhttpRequestBody: RequestBody?): RequestBodyMod
     return null
 }
 
-private fun fromHttpResponesBody(okhttpResponseBody: ResponseBody?): ResponseBodyModel? {
+private fun fromHttpResponesBody(okhttpResponseBody: ResponseBody?): BaseResponseBody? {
     okhttpResponseBody?.let { body ->
-        return ResponseBodyModel(
+        return BaseResponseBody(
             body.bytes().toTypedArray(),
             body.contentType()?.toString()
         )

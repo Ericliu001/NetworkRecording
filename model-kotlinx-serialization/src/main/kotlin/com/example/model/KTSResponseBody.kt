@@ -3,13 +3,13 @@ package com.example.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class KTSResponseBody(
+internal data class KTSResponseBody(
     val bytes: Array<Byte>,
     val contentType: String? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ResponseBodyModel) return false
+        if (other !is BaseResponseBody) return false
 
         if (!bytes.contentEquals(other.bytes)) return false
 

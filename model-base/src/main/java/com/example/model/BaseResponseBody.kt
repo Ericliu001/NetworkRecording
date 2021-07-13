@@ -1,12 +1,12 @@
 package com.example.model
 
-data class RequestBodyModel(
+data class BaseResponseBody(
     val bytes: Array<Byte>,
     val contentType: String? = null
-){
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RequestBodyModel) return false
+        if (other !is BaseResponseBody) return false
 
         if (!bytes.contentEquals(other.bytes)) return false
 

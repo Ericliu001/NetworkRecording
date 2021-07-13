@@ -1,10 +1,8 @@
 package com.example.recorder.repo
 
-import com.example.model.RequestModel
-import com.example.model.ResponseModel
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import com.example.Serializer
+import com.example.model.BaseRequest
+import com.example.model.BaseResponse
 import java.io.File
 import java.io.RandomAccessFile
 import java.nio.ByteBuffer
@@ -14,21 +12,23 @@ import java.nio.channels.OverlappingFileLockException
 
 private const val FILENAME = "record"
 
-internal class DiskRepo(private val root: File) {
+internal class DiskRepo<S : Serializer>(
+    private val root: File,
+    private val serializer: S
+) {
 
-    fun writeRecords(records: Map<RequestModel, List<ResponseModel>>) {
+    fun writeRecords(records: Map<BaseRequest, List<BaseResponse>>) {
         for ((request, responses) in records) {
             writeToFile(request, responses)
         }
     }
 
-    private fun writeToFile(requestModel: RequestModel, responses: List<ResponseModel>) {
+    private fun writeToFile(baseRequest: BaseRequest, responses: List<BaseResponse>) {
 
-        val encodedRecords = Json {
-            allowStructuredMapKeys = true
-        }.encodeToString(Pair(requestModel, responses))
+        val encodedRecords =
+        serializer.encodeToString(Pair(baseRequest, responses))
 
-        val outputFile = getFileByRequestUrl(requestModel)
+        val outputFile = getFileByRequestUrl(baseRequest)
         if (outputFile.exists()) {
             outputFile.delete()
         }
@@ -57,25 +57,24 @@ internal class DiskRepo(private val root: File) {
         channel.close()
     }
 
-    private fun getFileByRequestUrl(requestModel: RequestModel): File {
+    private fun getFileByRequestUrl(baseRequest: BaseRequest): File {
         // TODO: 7/13/21 read all responses with different suffices
-        val path = root.absolutePath + requestModel.url
+        val path = root.absolutePath + baseRequest.url
         File(path).mkdirs()
-        val suffix = requestModel.hashCode()
+        val suffix = baseRequest.hashCode()
         val outputFile = File(path, FILENAME + "_" + suffix)
         return outputFile
     }
 
     fun read(
-        requestModel: RequestModel,
-    ): MutableList<ResponseModel> {
-        val inputFile = getFileByRequestUrl(requestModel)
+        baseRequest: BaseRequest,
+    ): MutableList<BaseResponse> {
+        val inputFile = getFileByRequestUrl(baseRequest)
         if (!inputFile.exists()) {
             return mutableListOf()
         }
         val outputString = String(inputFile.readBytes())
-        val pair =
-            Json.decodeFromString<Pair<RequestModel, MutableList<ResponseModel>>>(outputString)
+        val pair = serializer.decodeFromString(outputString)
         return pair.second
     }
 

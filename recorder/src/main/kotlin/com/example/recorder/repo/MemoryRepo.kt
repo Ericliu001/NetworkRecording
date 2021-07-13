@@ -2,18 +2,18 @@ package com.example.recorder.repo
 
 import com.example.recorder.DefaultMatcheRule
 import com.example.recorder.MatchRule
-import com.example.model.RequestModel
-import com.example.model.ResponseModel
+import com.example.model.BaseRequest
+import com.example.model.BaseResponse
 
 internal class MemoryRepo {
-    private val records = mutableMapOf<RequestModel, MutableList<ResponseModel>>()
+    private val records = mutableMapOf<BaseRequest, MutableList<BaseResponse>>()
 
     fun read(
-        requestModel: RequestModel,
+        baseRequest: BaseRequest,
         matchRule: MatchRule = DefaultMatcheRule.INSTANCE
-    ): List<ResponseModel> {
+    ): List<BaseResponse> {
         for ((recordedRequest, recordedResponses) in records) {
-            if (matchRule.isMatch(recordedRequest, requestModel)) {
+            if (matchRule.isMatch(recordedRequest, baseRequest)) {
                 return recordedResponses.toList()
             }
         }
@@ -22,29 +22,29 @@ internal class MemoryRepo {
     }
 
     fun update(
-        requestModel: RequestModel,
-        responses: List<ResponseModel>,
+        baseRequest: BaseRequest,
+        responses: List<BaseResponse>,
         matchRule: MatchRule = DefaultMatcheRule.INSTANCE
     ) {
         for (key in records.keys) {
-            if (matchRule.isMatch(key, requestModel)) {
+            if (matchRule.isMatch(key, baseRequest)) {
                 records[key] = responses.toMutableList()
             }
         }
     }
 
-    fun write(requestModel: RequestModel, responseModel: ResponseModel) {
-        val list = records.getOrDefault(requestModel, mutableListOf())
-        list.add(responseModel)
-        records[requestModel] = list
+    fun write(baseRequest: BaseRequest, baseResponse: BaseResponse) {
+        val list = records.getOrDefault(baseRequest, mutableListOf())
+        list.add(baseResponse)
+        records[baseRequest] = list
     }
 
-    fun write(requestModel: RequestModel, responseRecords: MutableList<ResponseModel>) {
-        records[requestModel] = responseRecords
+    fun write(baseRequest: BaseRequest, baseResponseRecords: MutableList<BaseResponse>) {
+        records[baseRequest] = baseResponseRecords
     }
 
 
-    fun getAllRecordings(): Map<RequestModel, List<ResponseModel>> {
+    fun getAllRecordings(): Map<BaseRequest, List<BaseResponse>> {
         return records.toMap()
     }
 }
