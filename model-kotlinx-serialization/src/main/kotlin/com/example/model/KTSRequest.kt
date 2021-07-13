@@ -3,9 +3,9 @@ package com.example.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RequestRecord(
+data class KTSRequest(
     val url: String,
     val method: String,
     val headers: Map<String, List<String>>? = null,
-    val body: RequestBodyRecord? = null,
+    val requestBody: KTSRequestBody? = null,
 )

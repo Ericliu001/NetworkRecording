@@ -3,7 +3,7 @@ package com.example.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseBodyRecord(
+data class KTSResponseBody(
     val bytes: Array<Byte>,
     val contentType: String? = null
 ) {
