@@ -5,7 +5,7 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
-class ReplayInterceptor : BaseInterceptor() {
+class ReplayInterceptor(networkRecorder: NetworkRecorder) : BaseInterceptor(networkRecorder) {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="NetworkRecording.model-base" target="11" />
+      <module name="NetworkRecording.model-kotlinx-serialization" target="11" />
+      <module name="NetworkRecording.recorder" target="11" />
+      <module name="NetworkRecording.sample" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -11,7 +11,7 @@ import okhttp3.Request
 import okhttp3.Response
 import java.io.File
 
-class NetworkRecorder(private val interceptor: BaseInterceptor) {
+class NetworkRecorder {
     private var matchRule: MatchRule = DefaultMatchRule.INSTANCE
     private lateinit var memoryRepo: MemoryRepo
     private lateinit var diskRepo: DiskRepo<out Serializer>
@@ -19,7 +19,6 @@ class NetworkRecorder(private val interceptor: BaseInterceptor) {
     fun startRecording(root: File) {
         diskRepo = DiskRepo(root, ProtoSerializer()) // TODO: 7/13/21 need to be able to configure this.
         memoryRepo = MemoryRepo()
-        interceptor.networkRecorder = this
     }
 
     fun saveRecordsToFiles() {

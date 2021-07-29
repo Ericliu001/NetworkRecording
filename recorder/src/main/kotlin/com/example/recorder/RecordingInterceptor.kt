@@ -3,7 +3,7 @@ package com.example.recorder
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class RecordingInterceptor : BaseInterceptor() {
+class RecordingInterceptor(networkRecorder: NetworkRecorder) : BaseInterceptor(networkRecorder) {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val response: Response = chain.proceed(request)

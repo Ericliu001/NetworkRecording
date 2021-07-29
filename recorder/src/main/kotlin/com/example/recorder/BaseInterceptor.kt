@@ -2,6 +2,4 @@ package com.example.recorder
 
 import okhttp3.Interceptor
 
-abstract class BaseInterceptor : Interceptor {
-   var networkRecorder: NetworkRecorder? = null
-}
+abstract class BaseInterceptor(val networkRecorder: NetworkRecorder) : Interceptor

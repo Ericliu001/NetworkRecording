@@ -42,6 +42,11 @@ android {
     buildFeatures {
         viewBinding true
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -49,6 +54,7 @@ dependencies {
     implementation "com.uber.motif:motif:0.3.4"
     implementation 'androidx.work:work-runtime:2.5.0'
     kapt "com.uber.motif:motif-compiler:0.3.4"
+    testImplementation 'org.robolectric:robolectric:4.5.1'
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_serialization_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"

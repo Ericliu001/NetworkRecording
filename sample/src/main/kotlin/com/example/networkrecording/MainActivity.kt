@@ -54,40 +54,38 @@ class MainActivity : AppCompatActivity() {
         { controller, destination, arguments ->
 
             if (destination.label == "Home") {
-                mainScope.githubService().repos("Leland-Takamine")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        it.body()?.let { repos ->
-                            viewModel.populateRepos(repos)
-                        }
-                    }
-
+                fetchRepo("Leland-Takamine")
             }
 
             if (destination.label == "Dashboard") {
-                mainScope.githubService().repos("ericliu001")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        it.body()?.let { repos ->
-                            viewModel.populateRepos(repos)
-                        }
-                    }
-
+                fetchRepo("ericliu001")
             }
 
 
             if (destination.label == "Notifications") {
-                Completable.create {
-                    networkRecorder.saveRecordsToFiles()
-                }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe()
+                saveRecords()
             }
         })
 
     }
 
+    fun fetchRepo(repoName: String) {
+        mainScope.githubService().repos(repoName)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                it.body()?.let { repos ->
+                    viewModel.populateRepos(repos)
+                }
+            }
+    }
+
+    fun saveRecords() {
+        Completable.create {
+            networkRecorder.saveRecordsToFiles()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+    }
 }
