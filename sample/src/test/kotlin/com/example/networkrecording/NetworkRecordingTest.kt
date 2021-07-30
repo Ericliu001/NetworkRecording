@@ -1,7 +1,5 @@
 package com.example.networkrecording
 
-import android.app.Application
-import androidx.test.core.app.ApplicationProvider
 import com.example.recorder.NetworkRecorder
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
@@ -12,6 +10,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import java.io.File
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -32,12 +31,8 @@ class NetworkRecordingTest {
         networkRecorder = mainScope.networkRecorder()
 
 
-        RuntimeEnvironment.setTempDirectory(MyTempDirectory())
-        val application = ApplicationProvider.getApplicationContext<Application>()
-
-        application.getExternalFilesDir(null)?.let {
-            networkRecorder.startRecording(it)
-        }
+        RuntimeEnvironment.setTempDirectory(NotTempDirectory())
+        networkRecorder.startRecording(File("src/test/assets"))
     }
 
     @After

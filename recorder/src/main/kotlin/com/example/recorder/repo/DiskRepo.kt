@@ -11,6 +11,8 @@ import java.nio.channels.FileLock
 import java.nio.channels.OverlappingFileLockException
 
 private const val FILENAME = "record"
+private const val FILEEXTENSION = "bin"
+
 
 internal class DiskRepo<S : Serializer>(
     private val root: File,
@@ -61,7 +63,7 @@ internal class DiskRepo<S : Serializer>(
         val path = root.path + baseRequest.url
         File(path).mkdirs()
         val suffix = baseRequest.hashCode()
-        return File(path, FILENAME + "_" + suffix)
+        return File(path, FILENAME + "_" + suffix + "." + FILEEXTENSION)
     }
 
     fun read(

@@ -7,7 +7,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class MyTempDirectory : TempDirectory() {
+class NotTempDirectory : TempDirectory() {
     private val rootPath = Paths.get("src/test/assets")
 
 
