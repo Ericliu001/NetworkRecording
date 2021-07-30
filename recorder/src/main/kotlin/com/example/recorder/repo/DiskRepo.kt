@@ -58,7 +58,7 @@ internal class DiskRepo<S : Serializer>(
 
     private fun getFileByRequestUrl(baseRequest: BaseRequest): File {
         // TODO: 7/13/21 read all responses with different suffices
-        val path = root.absolutePath + baseRequest.url
+        val path = root.path + baseRequest.url
         File(path).mkdirs()
         val suffix = baseRequest.hashCode()
         return File(path, FILENAME + "_" + suffix)

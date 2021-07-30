@@ -77,6 +77,8 @@ class MainActivity : AppCompatActivity() {
                 it.body()?.let { repos ->
                     viewModel.populateRepos(repos)
                 }
+
+                saveRecords() // TODO: 7/29/21 need to remove.
             }
     }
 
