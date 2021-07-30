@@ -5,7 +5,9 @@ import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestName
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
@@ -20,6 +22,11 @@ import java.io.File
 @RunWith(RobolectricTestRunner::class)
 //@Config(shadows = [ShadowShadowEnvironment::class])
 class NetworkRecordingTest {
+
+    @Rule
+    @JvmField
+    val testMethodName: TestName = TestName()
+
     private lateinit var mainScope: MainScope
     private lateinit var networkRecorder: NetworkRecorder
 
@@ -30,9 +37,9 @@ class NetworkRecordingTest {
         mainScope = MainScopeImpl()
         networkRecorder = mainScope.networkRecorder()
 
-
-        RuntimeEnvironment.setTempDirectory(NotTempDirectory())
-        networkRecorder.startRecording(File("src/test/assets"))
+        val testName = testMethodName.methodName
+        RuntimeEnvironment.setTempDirectory(NotTempDirectory(testName))
+        networkRecorder.startRecording(File("src/test/assets", testName))
     }
 
     @After
@@ -41,7 +48,7 @@ class NetworkRecordingTest {
     }
 
     @Test
-    fun name() {
+    fun testActivityLaunch() {
         val controller = buildActivity(MainActivity::class.java).setup()
     }
 }

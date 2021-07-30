@@ -7,12 +7,12 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class NotTempDirectory : TempDirectory() {
+class NotTempDirectory(val testName: String) : TempDirectory() {
     private val rootPath = Paths.get("src/test/assets")
 
 
     override fun createIfNotExists(name: String?): Path {
-        val path = rootPath.resolve(name)
+        val path = rootPath.resolve(testName)
         try {
             Files.createDirectory(path)
         } catch (e: FileAlreadyExistsException) {
