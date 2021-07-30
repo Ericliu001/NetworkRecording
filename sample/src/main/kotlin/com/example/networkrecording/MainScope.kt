@@ -26,7 +26,7 @@ interface MainScope {
     @motif.Objects
     abstract class Objects {
         fun mode(): Mode {
-            return Mode.READING
+            return Mode.WRITING
         }
 
         fun recordingInterceptor(mode: Mode, networkRecorder: NetworkRecorder): BaseInterceptor {
